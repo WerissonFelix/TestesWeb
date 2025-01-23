@@ -5,6 +5,16 @@ const app = express();
 
 const db = require('./config/base');
 
+// Rotas principais
+
+app.listen(3000, () => {
+    console.log('Servidor tá rodando');
+});
+
+app.get('/', (req, res) => {
+    res.send('Tudo em ordem!');
+})
+
 // Métodos que envolvem o banco de dados
 
 // async function são funções que dão resutados por baixo dos panos, uma promise.
@@ -24,6 +34,7 @@ testarConexao();
 // Sincronizando o DB com o js
 
 const Aluno = require('./models/aluno.model.js');
+const { GEOGRAPHY } = require('sequelize');
 
 async function sincronizarDB() {
     try {
@@ -43,8 +54,9 @@ async function addAluno(){
     console.log(`Aluno adicionado: ${aluno.nome} - ${aluno.idade} - ${aluno.cpf}`);
 
 }
- 
 
+// pegar informações da tabela
+ 
 async function getAlunoById(id){
     const aluno = await Aluno.findByPk(id);
 
@@ -68,12 +80,30 @@ async function listarAlunos(){
     });
 }
 listarAlunos();
-// Métodos http para gerenciar as rotas
 
-app.listen(3000, () => {
-    console.log('Servidor tá rodando');
-});
+// Atualizar 
 
-app.get('/', (req, res) => {
-    res.send('Tudo em ordem!');
-})
+async function AtualizarAluno(id) {
+    getAlunoById(id);
+    const aluno = await Aluno.findByPk(id);
+    novoNome = 'Ronaldo';
+    novaIdade = 18;
+    novoCpf = '21321'
+    aluno.nome = novoNome;
+    aluno.idade = novaIdade;
+    aluno.cpf = novoCpf;
+    aluno.save();
+    getAlunoById(aluno.id)
+}
+//AtualizarAluno(1);
+
+async function excluirAluno(id){
+    await Aluno.destroy({ where: { id: id}})
+    try {   
+        console.log(`O aluno ${getAlunoById(id)} não foi excluido`)
+    } catch (error) {
+        console.log('O aluno foi excluido');
+    }
+} 
+
+//excluirAluno(2)
