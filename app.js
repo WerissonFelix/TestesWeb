@@ -2,8 +2,15 @@
 // Definindo as varíaveis constantes
 const express = require('express');
 const app = express();
-
 const db = require('./config/base');
+const bodyParser = require('body-parser');
+const exphbs = require('express-handlebars');
+const Aluno = require('./models/aluno.model.js');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.engine('handlebars', exphbs.engine());
+app.set('view engine', 'handlebars');
 
 // Rotas principais
 
@@ -11,9 +18,20 @@ app.listen(3000, () => {
     console.log('Servidor tá rodando');
 });
 
-app.get('/', (req, res) => {
-    res.send('Tudo em ordem!');
+app.get('/', async (req, res) => {
+    let alunos = await Aluno.findAll();
+    alunos = alunos.map((aluno) => aluno.dataValues);
+    
+    res.render('listarAlunos', { alunos });
+  });
+app.get('/AddAluno', async (req, res) => {
+    res.render('addAluno');
 })
+app.post('/AddAluno', async (req, res) => {
+    const { nome, idade, cpf } = req.body;
+    await Aluno.create({ nome, idade, cpf });
+    res.redirect('/');
+});
 
 // Métodos que envolvem o banco de dados
 
@@ -33,7 +51,7 @@ testarConexao();
 
 // Sincronizando o DB com o js
 
-const Aluno = require('./models/aluno.model.js');
+
 const { GEOGRAPHY } = require('sequelize');
 
 async function sincronizarDB() {
@@ -79,7 +97,7 @@ async function listarAlunos(){
         getAluno(aluno);
     });
 }
-listarAlunos();
+//listarAlunos();
 
 // Atualizar 
 
@@ -95,7 +113,7 @@ async function AtualizarAluno(id) {
     aluno.save();
     getAlunoById(aluno.id)
 }
-//AtualizarAluno(1);
+AtualizarAluno(1);
 
 async function excluirAluno(id){
     await Aluno.destroy({ where: { id: id}})

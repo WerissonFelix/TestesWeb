@@ -1,0 +1,24 @@
+<h1>Lista de Estudantes</h1>
+<a href="/AddAluno">Adicionar Estudante</a>
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Idade</th>
+      <th>cpf</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each alunos}}
+    <tr>
+      <td>{{this.nome}}</td>
+      <td>{{this.idade}}</td>
+      <td>{{this.cpf}}</td>
+      <td>
+        <button><a href="/edit/{{this.id}}">Editar</a></button>
+        <button><a href="/delete/{{this.id}}" onclick="return confirm('Tem certeza?')">Excluir</a></button>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

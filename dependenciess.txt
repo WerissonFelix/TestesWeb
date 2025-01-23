@@ -1,0 +1,5 @@
+express
+express-handlebars
+sequelize
+sqlite3
+body-parser
