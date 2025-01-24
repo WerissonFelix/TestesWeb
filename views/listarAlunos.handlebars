@@ -15,10 +15,11 @@
       <td>{{this.idade}}</td>
       <td>{{this.cpf}}</td>
       <td>
-        <button><a href="/edit/{{this.id}}">Editar</a></button>
-        <button><a href="/delete/{{this.id}}" onclick="return confirm('Tem certeza?')">Excluir</a></button>
+        <button><a href="/EditarAluno/{{this.id}}">Editar</a></button>
+        <button><a href="/deleteAluno/{{this.id}}" onclick="return confirm('Tem certeza?')">Excluir</a></button>
       </td>
     </tr>
     {{/each}}
   </tbody>
 </table>
+<button><a href="/">Voltar</a></button>

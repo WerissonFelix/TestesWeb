@@ -18,20 +18,46 @@ app.listen(3000, () => {
     console.log('Servidor tá rodando');
 });
 
+// ------------------   CRUD ALUNO   -------------------------
+//  * Listar
 app.get('/', async (req, res) => {
+    res.render('index');
+})
+app.get('/listarAlunos', async (req, res) => { // Pega os dados de todos os alunos cadastrados
     let alunos = await Aluno.findAll();
     alunos = alunos.map((aluno) => aluno.dataValues);
     
     res.render('listarAlunos', { alunos });
   });
-app.get('/AddAluno', async (req, res) => {
+
+app.get('/AddAluno', async (req, res) => { // Rota para encontrar o arquivo AddAluno
     res.render('addAluno');
 })
-app.post('/AddAluno', async (req, res) => {
+app.post('/AddAluno', async (req, res) => { // Cria um aluno na data base 
     const { nome, idade, cpf } = req.body;
     await Aluno.create({ nome, idade, cpf });
-    res.redirect('/');
+    res.redirect('/listarAlunos');
 });
+
+app.get('/EditarAluno/:id', async (req, res) => {
+    let aluno = await Aluno.findByPk(req.params.id);
+    aluno = aluno.dataValues;
+
+    res.render('EditarAluno', { aluno });
+})
+
+app.post('/EditarAluno/:id', async (req, res) => {
+    const {nome, idade, cpf} = req.body;
+    await Aluno.update({ nome, idade, cpf }, { where: { id: req.params.id } });
+
+    res.redirect('/listarAlunos');
+})
+
+app.get('/deleteAluno/:id', async (req, res) => {
+    await Aluno.destroy({ where: { id: req.params.id } });
+    res.redirect('/listarAlunos');
+});
+
 
 // Métodos que envolvem o banco de dados
 
@@ -113,7 +139,7 @@ async function AtualizarAluno(id) {
     aluno.save();
     getAlunoById(aluno.id)
 }
-AtualizarAluno(1);
+//AtualizarAluno(1);
 
 async function excluirAluno(id){
     await Aluno.destroy({ where: { id: id}})
